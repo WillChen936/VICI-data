@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     const u_char* packet;
     std::unordered_map<std::string, int> ip_count_map;
     while (pcap_next_ex(handle, &header, &packet) >= 0) {
-        std::cout << "Timestamp: " << header->ts.tv_sec << "." << header.ts.tv_usec;
+        std::cout << "Timestamp: " << header->ts.tv_sec << "." << header->ts.tv_usec;
         std::cout << " | Captured Length: " << header->caplen << " bytes" << std::endl;
         std::cout << " | Original Length: " << header->len << " bytes" << std::endl;
         std::cout << std::endl;
