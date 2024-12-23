@@ -26,7 +26,9 @@ int main(int argc, char* argv[]) {
         std::cout << std::endl;
 
         struct ip* ip_header = (struct ip *)(packet + 14);
-        std::cout << "&packet + 14:" << *(packet + 13) << " | " << *(packet + 14) << " | " << *(packet + 15) << endl;
+        std::cout << std::hex << "packet + 13: 0x" << +*(packet + 13) << " | "
+              << "packet + 14: 0x" << +*(packet + 14) << " | "
+              << "packet + 15: 0x" << +*(packet + 15) << std::endl;
         std::cout << "IP Header:" << std::endl;
         std::cout << "  Version: " << (int)ip_header->ip_v << std::endl;
         std::cout << "  Header Length: " << (int)ip_header->ip_hl * 4 << " bytes" << std::endl; // ip_hl 是 4 位，表示頭部長度（單位：4 字節）
