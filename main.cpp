@@ -53,7 +53,7 @@ void GroupByIPPort(const char* filepath) {
 
 
 int main(int argc, char* argv[]) {
-    if(argc < 2) {
+    if(argc < 3) {
         std::cerr << "Usage: ./main group-by-ip-port <filename>.pcap or ./main gap-stats <filename1>.pcap <filename2>.pcap" << std::endl;
         return 1;
     }
