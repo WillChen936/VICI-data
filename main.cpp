@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
         struct in_addr dst_addr = ip_header->ip_dst;
         std::cout << "  Source IP: " << inet_ntoa(src_addr) << std::endl;
         std::cout << "  Destination IP: " << inet_ntoa(dst_addr) << std::endl;
-        std::cout << "------------------------------" << inet_ntoa(dst_addr) << std::endl;
+        std::cout << "------------------------------" << std::endl;
 
         char dest_ip[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &(ip_header->ip_dst), dest_ip, INET_ADDRSTRLEN);
