@@ -8,7 +8,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    char* filepath = "./data.pcap";
+    const char* filepath = "./data.pcap";
     char errbuf[PCAP_ERRBUF_SIZE];
     pcap_t* handle = pcap_open_offline(filepath, errbuf);
     if (handle == nullptr) {
