@@ -29,7 +29,7 @@ void GroupByIPPort(const char* filepath) {
 
         std::string dst_ip = inet_ntoa(ip_header->ip_dst);
         uint16_t dst_port = ntohs(udp_header->uh_dport);
-        auto dst_ip_port = dst_ip = dst_ip + "," + std::to_string(dst_port);
+        auto dst_ip_port = dst_ip + "," + std::to_string(dst_port);
 
         ip_port_count[dst_ip_port]++;
     }
