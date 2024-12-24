@@ -75,11 +75,57 @@ void StatsGap(const char* filepath1, const char* filepath2) {
     while(pcap_next_ex(handle2, &header, &packet) >= 0) {
         arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
     }
+    pcap_close(handle1);
+    pcap_close(handle2);
 
     std::sort(arrival_times.begin(), arrival_times.end());
-    for(const auto& timestamped : arrival_times) {
-        std::cout << "Arrival times: " << timestamped << std:: endl;
+
+    std::vector<double> intervals;
+    for(int i = 1; i < arrival_times.size(); i++) {
+        intervals.push_back(arrival_times[i] - arrival_times[i - 1]);
     }
+
+    // compute
+    double sum = 0.0, mean = 0.0, std_dev = 0.0, median = 0.0;
+    auto size = intervals.size();
+
+    sum = std::accumulate(intervals.begin(), intervals.end(), 0);
+    mean = sum / size;
+    
+    double sum_squares = 0.0;
+    for(const auto& val : intervals) {
+        sum_squares += (val - mean) * (val - mean);
+    }
+    std_dev = std::sqrt(sum_squares / size);
+
+    auto sorted_intervals = intervals;
+    std::sort(sorted_intervals.begin(), sorted_intervals.end());
+    median = sorted_intervals[n / 2];
+
+    auto p1 = sorted_intervals[n * 1 / 100];
+    auto p99 = sorted_intervals[n * 99 / 100];
+
+    // output
+    std::ofstream csv_file("gap_stats.csv");
+    if (!csv_file.is_open()) {
+        std::cerr << "Error opening output file gap_stats.csv." << std::endl;
+        return;
+    }
+
+    std::cout << "stat,value" << std::endl;
+    csv_file << "stat,value" << std::endl;
+    std::cout << "mean," << mean << std::endl;
+    csv_file << "mean," << mean << std::endl;
+    std::cout << "std," << std_dev << std::endl;
+    csv_file << "std," << std_dev << std::endl;
+    std::cout << "median," << median << std::endl;
+    csv_file << "median," << median << std::endl;
+    std::cout << "1%," << p1 << std::endl;
+    csv_file << "1%," << p1 << std::endl;
+    std::cout << "99%," << p99 << std::endl;
+    csv_file << "99%," << p99 << std::endl;
+
+    csv_file.close();
 }
 
 
