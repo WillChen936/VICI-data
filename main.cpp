@@ -14,6 +14,7 @@
 
 #define ETHERNET_HEADER_LEN 14
 
+// ------------------------------Group By IP Port------------------------------
 void GroupByIPPort(const char* filepath) {
     char errbuf[PCAP_ERRBUF_SIZE];
     pcap_t* handle = pcap_open_offline(filepath, errbuf);
@@ -54,6 +55,10 @@ void GroupByIPPort(const char* filepath) {
 
     csv_file.close();
 }
+// ------------------------------Group By IP Port------------------------------
+
+// --------------------------------- StatsGap ---------------------------------
+std::vector<double> ExtractArrivalTimes();
 
 void StatsGap(const char* filepath1, const char* filepath2) {
     char errbuf[PCAP_ERRBUF_SIZE];
@@ -104,8 +109,11 @@ void StatsGap(const char* filepath1, const char* filepath2) {
     std::sort(sorted_intervals.begin(), sorted_intervals.end());
     median = sorted_intervals[size / 2];
 
-    auto p1 = sorted_intervals[size * 1 / 100];
-    auto p99 = sorted_intervals[size * 99 / 100];
+    double pos1 = size * 1 / 100.0;
+    double pos99 = size * 99 / 100.0;
+    std::cout << "pos1 = " << pos1 << "pos2 = " << pos1 << std::endl;
+    auto p1 = pos1 % 2 == 0 ? sorted_intervals[pos1] : (sorted_intervals[pos1] + sorted_intervals[pos2]) / 2;
+    auto p99 = pos1 % 2 == 0 ? sorted_intervals[pos1] : (sorted_intervals[pos1] + sorted_intervals[pos2]) / 2;
 
     // output
     std::ofstream csv_file("gap_stats.csv");
@@ -134,7 +142,7 @@ void StatsGap(const char* filepath1, const char* filepath2) {
         std::cout << "  " << val << std::endl;
     }
 }
-
+// --------------------------------- StatsGap ---------------------------------
 
 int main(int argc, char* argv[]) {
     if(argc < 3) {
