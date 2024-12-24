@@ -51,6 +51,34 @@ void GroupByIPPort(const char* filepath) {
     csv_file.close();
 }
 
+void StatsGap(const char* filepath1, const char* filepath2) {
+    char errbuf[PCAP_ERRBUF_SIZE];
+    pcap_t* handle1 = pcap_open_offline(filepath1, errbuf);
+    if (handle1 == nullptr) {
+        std::cerr << "Error opening file: " << errbuf << std::endl;
+        return;
+    }
+    pcap_t* handle2 = pcap_open_offline(filepath2, errbuf);
+    if (handle2 == nullptr) {
+        std::cerr << "Error opening file: " << errbuf << std::endl;
+        return;
+    }
+
+    struct pcap_pkthdr* header;
+    const u_char* packet;
+    std::vector<double> arrival_times;
+    while(pcap_next_ex(handle1, &header, &packet) >= 0) {
+        arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
+    }
+    while(pcap_next_ex(handle2, &header, &packet) >= 0) {
+        arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
+    }
+
+    for(const auto& timestamped : arrival_times) {
+        std::cout << "Arrival times: " << timestamped << std:: endl;
+    }
+}
+
 
 int main(int argc, char* argv[]) {
     if(argc < 3) {
@@ -64,7 +92,9 @@ int main(int argc, char* argv[]) {
         GroupByIPPort(filepath);
     }
     else if(cmd == "gap-stats") {
-        std::cerr << "CMD gap-stats haven't implemented yet.";
+        auto filepath1 = argv[2];
+        auto filepath2 = argv[3];
+        StatsGap(filepath1, filepath2);
     }
     else {
         std::cerr << "Usage: ./main group-by-ip-port <filename>.pcap or ./main gap-stats <filename1>.pcap <filename2>.pcap" << std::endl;
