@@ -128,6 +128,11 @@ void StatsGap(const char* filepath1, const char* filepath2) {
     csv_file << "99%," << p99 << std::endl;
 
     csv_file.close();
+
+    std::cout << "Intervals:" << std::endl;
+    for(const auto& val : intervals) {
+        std::cout << "  " << val << std::endl;
+    }
 }
 
 
