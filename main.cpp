@@ -130,7 +130,7 @@ void StatsGap(const char* filepath1, const char* filepath2) {
     csv_file.close();
 
     std::cout << "Intervals size: " << size << std::endl;
-    for(const auto& val : intervals) {
+    for(const auto& val : sorted_intervals) {
         std::cout << "  " << val << std::endl;
     }
 }
