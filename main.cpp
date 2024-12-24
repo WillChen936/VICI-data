@@ -109,11 +109,12 @@ void StatsGap(const char* filepath1, const char* filepath2) {
     std::sort(sorted_intervals.begin(), sorted_intervals.end());
     median = sorted_intervals[size / 2];
 
-    double pos1 = size * 1 / 100.0;
-    double pos99 = size * 99 / 100.0;
-    std::cout << "pos1 = " << pos1 << "pos2 = " << pos1 << std::endl;
-    auto p1 = pos1 % 2 == 0 ? sorted_intervals[pos1] : (sorted_intervals[pos1] + sorted_intervals[pos2]) / 2;
-    auto p99 = pos1 % 2 == 0 ? sorted_intervals[pos1] : (sorted_intervals[pos1] + sorted_intervals[pos2]) / 2;
+    int pos1 = size * 1 / 100;
+    int pos99 = size * 99 / 100;
+    std::cout << "size * 1 / 100 is Z? " << (size * 1) % 100 == 0 << std::endl;
+    std::cout << "size * 99 / 100 is Z? " << (size * 99) % 100 == 0 << std::endl;
+    auto p1 = (size * 1) % 100 == 0 ? sorted_intervals[pos1] : (sorted_intervals[pos1] + sorted_intervals[pos1 + 1]) / 2;
+    auto p99 = (size * 99) % 100 == 0 ? sorted_intervals[pos99] : (sorted_intervals[pos99] + sorted_intervals[pos99 + 1]) / 2;
 
     // output
     std::ofstream csv_file("gap_stats.csv");
