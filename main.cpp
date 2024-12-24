@@ -75,7 +75,7 @@ void ExtractArrivalTimes(const char* filepath, std::vector<double>& arrival_time
     if(res == -1) {
         auto err_msg = pcap_geterr(handle);
         pcap_close(handle);
-        throw std::runtime_error(std::string("Error reading " + filepath + ": ") + errbuf);
+        throw std::runtime_error(std::string("Error reading " + std::string(filepath) + ": ") + errbuf);
     }
 
     pcap_close(handle);
