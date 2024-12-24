@@ -1,5 +1,5 @@
-install:
+build:
 	g++ -o main main.cpp -lpcap
 
-uninstall:
+clean:
 	rm -rf main *.csv
