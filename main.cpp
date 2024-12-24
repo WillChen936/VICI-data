@@ -61,24 +61,36 @@ void GroupByIPPort(const char* filepath) {
 void ExtractArrivalTimes(const char* filepath, std::vector<double>& arrival_times) {
     char errbuf[PCAP_ERRBUF_SIZE];
     pcap_t* handle = pcap_open_offline(filepath, errbuf);
-    if (handle == nullptr) {
-        std::cerr << "Error opening file: " << errbuf << std::endl;
-        return;
+    if(!handle) {
+        throw std::runtime_error(std::string("Error opening file: ") + errbuf);
     }
 
     struct pcap_pkthdr* header;
     const u_char* packet;
-    while(pcap_next_ex(handle, &header, &packet) >= 0) {
+    while((res = pcap_next_ex(handle, &header, &packet)) >= 0) {
         arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
+    }
+
+    if(res == -1) {
+        auto err_msg = pcap_geterr(handle);
+        pcap_close(handle);
+        throw std::runtime_error(std::string("Error reading " + filepath + ": ") + errbuf);
     }
 
     pcap_close(handle);
 }
 
 void StatsGap(const char* filepath1, const char* filepath2) {
-    std::vector<double> arrival_times;
-    ExtractArrivalTimes(filepath1, arrival_times);
-    ExtractArrivalTimes(filepath2, arrival_times);
+    std::vector<double> arrival_times;\
+    try {
+        ExtractArrivalTimes(filepath1, arrival_times);
+        ExtractArrivalTimes(filepath2, arrival_times);
+    }
+    catch(const std::exception& ex) {
+        std::cerr << "Error during packet extraction: " << ex.what() << std::endl;
+        return EXIT_FAILURE; // 中止流程
+    }
+    
 
     std::sort(arrival_times.begin(), arrival_times.end());
     std::vector<double> intervals;
