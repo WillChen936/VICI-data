@@ -67,7 +67,7 @@ void ExtractArrivalTimes(const char* filepath, std::vector<double>& arrival_time
 
     struct pcap_pkthdr* header;
     const u_char* packet;
-    while((res = pcap_next_ex(handle, &header, &packet)) >= 0) {
+    while((auto res = pcap_next_ex(handle, &header, &packet)) >= 0) {
         arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
     }
 
