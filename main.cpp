@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include <algorithm>
 #include <vector>
 #include <unordered_map>
+#include <cmath>
+#include <numeric>
+#include <algorithm>
 
 #include <pcap.h>
 #include <netinet/ip.h>
@@ -100,10 +102,10 @@ void StatsGap(const char* filepath1, const char* filepath2) {
 
     auto sorted_intervals = intervals;
     std::sort(sorted_intervals.begin(), sorted_intervals.end());
-    median = sorted_intervals[n / 2];
+    median = sorted_intervals[size / 2];
 
-    auto p1 = sorted_intervals[n * 1 / 100];
-    auto p99 = sorted_intervals[n * 99 / 100];
+    auto p1 = sorted_intervals[size * 1 / 100];
+    auto p99 = sorted_intervals[size * 99 / 100];
 
     // output
     std::ofstream csv_file("gap_stats.csv");
