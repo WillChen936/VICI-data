@@ -58,35 +58,29 @@ void GroupByIPPort(const char* filepath) {
 // ------------------------------Group By IP Port------------------------------
 
 // --------------------------------- StatsGap ---------------------------------
-std::vector<double> ExtractArrivalTimes();
-
-void StatsGap(const char* filepath1, const char* filepath2) {
+void ExtractArrivalTimes(const char* filepath, std::vector<double>& arrival_times) {
     char errbuf[PCAP_ERRBUF_SIZE];
-    pcap_t* handle1 = pcap_open_offline(filepath1, errbuf);
-    if (handle1 == nullptr) {
-        std::cerr << "Error opening file: " << errbuf << std::endl;
-        return;
-    }
-    pcap_t* handle2 = pcap_open_offline(filepath2, errbuf);
-    if (handle2 == nullptr) {
+    pcap_t* handle = pcap_open_offline(filepath, errbuf);
+    if (handle == nullptr) {
         std::cerr << "Error opening file: " << errbuf << std::endl;
         return;
     }
 
     struct pcap_pkthdr* header;
     const u_char* packet;
+    while(pcap_next_ex(handle, &header, &packet) >= 0) {
+        arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
+    }
+
+    pcap_close(handle);
+}
+
+void StatsGap(const char* filepath1, const char* filepath2) {
     std::vector<double> arrival_times;
-    while(pcap_next_ex(handle1, &header, &packet) >= 0) {
-        arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
-    }
-    while(pcap_next_ex(handle2, &header, &packet) >= 0) {
-        arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
-    }
-    pcap_close(handle1);
-    pcap_close(handle2);
+    ExtractArrivalTimes(filepath1, arrival_times);
+    ExtractArrivalTimes(filepath2, arrival_times);
 
     std::sort(arrival_times.begin(), arrival_times.end());
-
     std::vector<double> intervals;
     for(int i = 1; i < arrival_times.size(); i++) {
         intervals.push_back(arrival_times[i] - arrival_times[i - 1]);
