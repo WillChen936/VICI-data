@@ -156,12 +156,24 @@ int main(int argc, char* argv[]) {
     auto cmd = std::string(argv[1]);
     if(cmd == "group-by-ip-port") {
         auto filepath = argv[2];
-        GroupByIPPort(filepath);
+        try {
+            GroupByIPPort(filepath);
+        }
+        catch(const std::exception& ex) {
+            std::cerr << "An error occurred: " << ex.what() << std::endl;
+            return EXIT_FAILURE;
+        }
     }
     else if(cmd == "gap-stats") {
         auto filepath1 = argv[2];
         auto filepath2 = argv[3];
-        StatsGap(filepath1, filepath2);
+        try {
+            StatsGap(filepath1, filepath2);
+        }
+        catch(const std::exception& ex) {
+            std::cerr << "An error occurred: " << ex.what() << std::endl;
+            return EXIT_FAILURE;
+        }
     }
     else {
         std::cerr << "Usage: ./main group-by-ip-port <filename>.pcap or ./main gap-stats <filename1>.pcap <filename2>.pcap" << std::endl;
