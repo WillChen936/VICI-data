@@ -67,7 +67,8 @@ void ExtractArrivalTimes(const char* filepath, std::vector<double>& arrival_time
 
     struct pcap_pkthdr* header;
     const u_char* packet;
-    while((auto res = pcap_next_ex(handle, &header, &packet)) >= 0) {
+    int res;
+    while((res = pcap_next_ex(handle, &header, &packet)) >= 0) {
         arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
     }
 
@@ -155,24 +156,16 @@ int main(int argc, char* argv[]) {
     auto cmd = std::string(argv[1]);
     if(cmd == "group-by-ip-port") {
         auto filepath = argv[2];
-        try {
-            GroupByIPPort(filepath);
-        }
+        GroupByIPPort(filepath);
     }
     else if(cmd == "gap-stats") {
         auto filepath1 = argv[2];
         auto filepath2 = argv[3];
-        try {
-            StatsGap(filepath1, filepath2);
-        }
+        StatsGap(filepath1, filepath2);
     }
     else {
         std::cerr << "Usage: ./main group-by-ip-port <filename>.pcap or ./main gap-stats <filename1>.pcap <filename2>.pcap" << std::endl;
         return 1;
-    }
-    catch(const std::exception& ex) {
-        std::cerr << "Failed to process data: " << ex.what() << std::endl;
-        return EXIT_FAILURE; // 結束程序
     }
     
     return 0;
