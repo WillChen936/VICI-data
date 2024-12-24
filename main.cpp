@@ -88,7 +88,7 @@ void StatsGap(const char* filepath1, const char* filepath2) {
     }
     catch(const std::exception& ex) {
         std::cerr << "Error during packet extraction: " << ex.what() << std::endl;
-        return EXIT_FAILURE; // 中止流程
+        throw;
     }
     
 
@@ -155,16 +155,24 @@ int main(int argc, char* argv[]) {
     auto cmd = std::string(argv[1]);
     if(cmd == "group-by-ip-port") {
         auto filepath = argv[2];
-        GroupByIPPort(filepath);
+        try {
+            GroupByIPPort(filepath);
+        }
     }
     else if(cmd == "gap-stats") {
         auto filepath1 = argv[2];
         auto filepath2 = argv[3];
-        StatsGap(filepath1, filepath2);
+        try {
+            StatsGap(filepath1, filepath2);
+        }
     }
     else {
         std::cerr << "Usage: ./main group-by-ip-port <filename>.pcap or ./main gap-stats <filename1>.pcap <filename2>.pcap" << std::endl;
         return 1;
+    }
+    catch(const std::exception& ex) {
+        std::cerr << "Failed to process data: " << ex.what() << std::endl;
+        return EXIT_FAILURE; // 結束程序
     }
     
     return 0;
