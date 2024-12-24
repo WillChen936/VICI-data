@@ -91,7 +91,7 @@ void StatsGap(const char* filepath1, const char* filepath2) {
     double sum = 0.0, mean = 0.0, std_dev = 0.0, median = 0.0;
     auto size = intervals.size();
 
-    sum = std::accumulate(intervals.begin(), intervals.end(), 0);
+    sum = std::accumulate(intervals.begin(), intervals.end(), 0.0);
     mean = sum / size;
     
     double sum_squares = 0.0;
@@ -129,7 +129,7 @@ void StatsGap(const char* filepath1, const char* filepath2) {
 
     csv_file.close();
 
-    std::cout << "Intervals:" << std::endl;
+    std::cout << "Intervals size: " << size << std::endl;
     for(const auto& val : intervals) {
         std::cout << "  " << val << std::endl;
     }
