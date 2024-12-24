@@ -82,13 +82,12 @@ void ExtractArrivalTimes(const char* filepath, std::vector<double>& arrival_time
 }
 
 void StatsGap(const char* filepath1, const char* filepath2) {
-    std::vector<double> arrival_times;\
+    std::vector<double> arrival_times;
     try {
         ExtractArrivalTimes(filepath1, arrival_times);
         ExtractArrivalTimes(filepath2, arrival_times);
     }
     catch(const std::exception& ex) {
-        std::cerr << "Error during packet extraction: " << ex.what() << std::endl;
         throw;
     }
     
