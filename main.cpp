@@ -74,6 +74,7 @@ void StatsGap(const char* filepath1, const char* filepath2) {
         arrival_times.push_back(header->ts.tv_sec + header->ts.tv_usec / 1e6);
     }
 
+    std::sort(arrival_times.begin(), arrival_times.end());
     for(const auto& timestamped : arrival_times) {
         std::cout << "Arrival times: " << timestamped << std:: endl;
     }
